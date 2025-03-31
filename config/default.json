@@ -1,0 +1,52 @@
+{
+  "claude": {
+    "model": "claude-3-5-haiku-20241022",
+    "maxTokens": 100000,
+    "responseMaxTokens": 4000,
+    "defaultSystemPrompt": "You are a helpful AI assistant with access to a large document. Answer questions based only on the content provided.",
+    "tokenRatePerMinute": 50000
+  },
+  "fileProcessing": {
+    "supportedTextExtensions": [
+      ".txt",
+      ".md",
+      ".json",
+      ".js",
+      ".py",
+      ".html",
+      ".css",
+      ".csv",
+      ".xml",
+      ".yaml",
+      ".yml"
+    ],
+    "supportedPdfExtensions": [
+      ".pdf"
+    ],
+    "maxFileSizeInMemoryMb": 50
+  },
+  "chunking": {
+    "chunkSizePercentage": 40,
+    "overlapPercentage": 10,
+    "preserveParagraphs": true
+  },
+  "indexing": {
+    "noIndexThresholdPercentage": 30,
+    "maxOverallSummaryLength": 2000
+  },
+  "query": {
+    "maxChunksPerQuery": 5,
+    "stopWords": ["a", "an", "the", "and", "or", "but", "is", "are", "of", "to", "in", "on", "by", "with", "about", "for", "from"],
+    "useSplitStrategyForLargeIndices": true,
+    "llmChunkSize": 50
+  },
+  "conversation": {
+    "maxRecentExchanges": 5,
+    "maxSummaryTokens": 500,
+    "mergeFrequency": 3
+  },
+  "prompts": {
+    "summarizeTemplate": "return a json file (nothing more) with the following entries: summary: should enable one to know whether the content is relevant given some general or specific question. it should be distinctive as to the part  this content may have in a wider context content. keywords: also, must be distinctive but cover most topics included. This is the content: {{CONTENT}}. return json only, with no additional text.",
+    "answerTemplate": "You are assisting with questions about a document. Please answer based only on the information provided.\n\n{{HISTORY}}\n\n{{RELEVANT_INFO}}\n\nUSER QUESTION: {{QUESTION}}\n\nProvide a clear, concise answer based only on the relevant information provided above. If the information doesn't contain the answer, say \"I don't have information about that in the provided content.\""
+  }
+}

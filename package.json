@@ -1,0 +1,44 @@
+{
+  "name": "claude-context-extender",
+  "version": "1.0.0",
+  "description": "A tool to help Claude work with large inputs beyond its context window",
+  "main": "src/app.js",
+  "bin": {
+    "context-extender": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "claude",
+    "context",
+    "llm",
+    "ai",
+    "nlp",
+    "text",
+    "rag"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.14.1",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.1",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^8.2.6",
+    "lodash": "^4.17.21",
+    "pdf-parse": "^1.1.1",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
