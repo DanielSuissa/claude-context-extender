@@ -1,163 +1,219 @@
 # Claude Context Extender
 
-כלי המאפשר לקלוד לעבוד עם קלט גדול מעבר לחלון ההקשר שלו.
+A fun tool that enables Claude to work effectively with documents that exceed its context window size.
 
-## סקירה כללית
+## 📖 Overview
 
-Claude Context Extender הוא יישום CLI מבוסס Node.js המאפשר לעבוד עם מסמכים גדולים יותר מחלון ההקשר של קלוד. זה עובד על ידי:
+Claude Context Extender is a Node.js application that enhances Claude's ability to process and answer questions about large documents by using an iterative approach. It intelligently splits documents into manageable chunks, creates an index for efficient retrieval, and processes relevant sections sequentially to produce comprehensive answers.
 
-1. חלוקת מסמכים גדולים לקטעים קטנים יותר
-2. יצירת אינדקס עם תקצירים ומילות מפתח לכל קטע
-3. מציאת הקטעים הרלוונטיים ביותר בעת מענה לשאלות
-4. שימוש בקלוד כדי לספק תשובות המבוססות רק על החלקים הרלוונטיים
+The tool implements an advanced Retrieval-Augmented Generation (RAG) approach that overcomes the context window limitations of large language models.
 
-גישה זו מאפשרת לקלוד לעבוד ביעילות עם מסמכים גדולים הרבה יותר ממה שהיה מתאפשר בדרך כלל בחלון ההקשר שלו.
+## ✨ Key Features
 
-## תכונות
+- **Smart Chunking**: Automatically breaks documents into optimal segments with configurable overlap
+- **Efficient Indexing**: Creates compact but effective indexes with summaries and keywords for each chunk
+- **Semantic Search**: Uses Claude to identify the most relevant chunks for a query
+- **Iterative Processing**: Processes one chunk at a time to handle documents of any size
+- **Progressive Answer Building**: Continuously refines answers as more information is processed
+- **Conversation Management**: Maintains conversation history with automatic summarization
+- **Rate Limiting**: Intelligently manages API request timing to prevent rate limit errors
 
-- עיבוד קבצי טקסט ו-PDF
-- חלוקה אוטומטית לקטעים עם גודל וחפיפה הניתנים להגדרה
-- אינדוקס חכם עם תקצירים ומילות מפתח מיוצרים על ידי קלוד
-- שמירה קבועה של אינדקסים
-- ממשק CLI פשוט ליצירת אינדקסים ושאילתות מסמכים
-- אפשרויות הגדרה לכיוונון ביצועים
-- ניהול שיחות מתמשכות עם זיכרון דינמי
+## 🛠️ Installation
 
-## דרישות מקדימות
+### Prerequisites
 
-- Node.js 14 ומעלה
-- מפתח API של קלוד
+- Node.js (v14 or later)
+- An Anthropic API key for Claude
 
-## התקנה
+### Steps
 
-1. שכפל את המאגר:
+1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/claude-context-extender.git
    cd claude-context-extender
    ```
 
-2. התקן תלויות:
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. צור קובץ `.env` עם מפתח ה-API של קלוד:
+3. Create configuration files:
    ```bash
    cp .env.example .env
-   # ערוך את .env כדי להוסיף את מפתח ה-API שלך
+   # Edit .env and add your Claude API key
    ```
 
-4. הפוך את ה-CLI לאפשרי להפעלה:
+4. Make the CLI executable:
    ```bash
    chmod +x bin/cli.js
    ```
 
-5. אופציונלית, התקן גלובלית:
+5. Run the setup script:
    ```bash
-   npm install -g .
+   npm run setup
    ```
 
-## שימוש
+## 📝 Usage
 
-### יצירת אינדקס
-
-```bash
-context-extender index path/to/file.pdf --name "My Document"
-```
-
-או
+### Creating an Index
 
 ```bash
-context-extender index path/to/directory --name "My Project Documents"
+# Index a single file
+node bin/cli.js index path/to/document.pdf --name "My Document"
+
+# Index a directory of documents
+node bin/cli.js index path/to/documents/ --name "My Collection"
 ```
 
-### שאילתה באינדקס
+### Querying an Index
 
 ```bash
-context-extender query your-index-id -q "What is the main thesis of this document?"
+# Query an index by ID
+node bin/cli.js query your-index-id -q "What is the main thesis of this document?"
+
+# Interactive query mode
+node bin/cli.js query your-index-id
 ```
 
-או פשוט:
+### Managing Indexes
 
 ```bash
-context-extender query
-```
-ועקוב אחר ההנחיות האינטראקטיביות.
+# List all indexes
+node bin/cli.js list
 
-### רשימת אינדקסים
+# View details about a specific index
+node bin/cli.js info your-index-id
+
+# Delete an index
+node bin/cli.js delete your-index-id
+```
+
+### Managing Conversations
 
 ```bash
-context-extender list
+# List all conversations
+node bin/cli.js conversations
+
+# View details about a specific conversation
+node bin/cli.js conversation-info your-conversation-id
+
+# Delete a conversation
+node bin/cli.js delete-conversation your-conversation-id
 ```
 
-### צפייה במידע על אינדקס
+### Configuration
 
 ```bash
-context-extender info your-index-id
+# View current configuration
+node bin/cli.js config --view
+
+# Update configuration
+node bin/cli.js config --update
 ```
 
-### מחיקת אינדקס
+## ⚙️ Configuration Options
 
-```bash
-context-extender delete your-index-id
-```
+The system can be customized through the `config/default.json` file:
 
-### צפייה ברשימת שיחות
+| Category    | Option                     | Description                                      | Default  |
+|-------------|----------------------------|--------------------------------------------------|----------|
+| claude      | model                      | Claude model to use                              | claude-3-5-haiku-20241022 |
+| claude      | maxTokens                  | Maximum context window size                      | 100000   |
+| claude      | tokenRatePerMinute         | Rate limit for tokens per minute                 | 50000    |
+| chunking    | chunkSizePercentage        | Size of each chunk relative to context window    | 40%      |
+| chunking    | overlapPercentage          | Overlap between chunks                           | 10%      |
+| query       | maxChunksPerQuery          | Maximum chunks to process per query              | 5        |
+| conversation| maxRecentExchanges         | Recent exchanges to keep in full                 | 5        |
+| conversation| mergeFrequency             | Frequency of merging old conversation history    | 3        |
 
-```bash
-context-extender conversations [indexId]
-```
-
-### הגדרת הגדרות
-
-```bash
-context-extender config --view
-context-extender config --update
-```
-
-## הגדרות
-
-ניתן להגדיר את היישום על ידי עריכת הקובץ `config/default.json` או באמצעות פקודת `config`. אפשרויות הגדרה מרכזיות כוללות:
-
-- `chunking.chunkSizePercentage`: אחוז מחלון ההקשר של קלוד לשימוש עבור כל קטע (ברירת מחדל: 40%)
-- `chunking.overlapPercentage`: אחוז חפיפה בין קטעים (ברירת מחדל: 10%)
-- `query.maxChunksPerQuery`: מספר מקסימלי של קטעים לכלול בשאילתה (ברירת מחדל: 5)
-- `conversation.maxRecentExchanges`: מספר החלפות שיחה אחרונות לשמירה (ברירת מחדל: 5)
-- `conversation.mergeFrequency`: תדירות מיזוג היסטוריית שיחה (ברירת מחדל: כל 3 חלפות)
-
-## מבנה הפרויקט
+## 🏗️ Project Structure
 
 ```
 claude-context-extender/
-├── bin/                      # סקריפטים לשורת הפקודה
-│   └── cli.js                # נקודת כניסה לכלי ה-CLI
-├── config/                   # קבצי הגדרות
-│   ├── default.json          # הגדרות ברירת מחדל
-│   └── user.json             # הגדרות משתמש (נוצר לאחר שינויי הגדרות)
-├── data/                     # נתונים
-│   ├── indexes/              # אינדקסים מאוחסנים
-│   └── conversations/        # שיחות מאוחסנות
-├── logs/                     # קבצי לוג
-├── src/                      # קוד מקור
-│   ├── app.js                # נקודת כניסה ראשית
-│   ├── controllers/          # שכבת בקרה
-│   │   └── AppController.js  # בקר ראשי
-│   ├── services/             # שירותים עיקריים
-│   │   ├── FileProcessor.js  # קריאה וחלוקת קבצים
-│   │   ├── IndexManager.js   # ניהול אינדקס
-│   │   ├── ClaudeClient.js   # לקוח API של קלוד
-│   │   └── ConversationManager.js # ניהול שיחות
-│   ├── cli/                  # ממשק שורת פקודה
-│   │   └── CLIManager.js     # מנהל CLI
-│   ├── utils/                # כלים שימושיים
-│   │   ├── ConfigManager.js  # ניהול הגדרות
-│   │   └── Logger.js         # מערכת לוגים
-│   └── models/               # מודלים נתונים
-│       └── Chunk.js          # מודל קטע
-├── package.json
-└── README.md
+├── bin/                      # CLI scripts
+│   └── cli.js                # Main CLI entry point
+│
+├── config/                   # Configuration files
+│   └── default.json          # Default configuration
+│
+├── data/                     # Data storage
+│   ├── indexes/              # Stored indexes
+│   └── conversations/        # Stored conversations
+│
+├── scripts/                  # Utility scripts
+│   ├── install.js            # Installation script
+│   └── organize-files.js     # Project structure script
+│
+├── src/                      # Source code
+│   ├── app.js                # Main application entry point
+│   ├── controllers/          # Application controllers
+│   ├── services/             # Core services
+│   │   ├── FileProcessor.js  # File reading and chunking
+│   │   ├── IndexManager.js   # Index management
+│   │   ├── ClaudeClient.js   # Claude API client
+│   │   └── IterativeAnswerer.js # Iterative answer generation
+│   ├── cli/                  # CLI implementation
+│   ├── utils/                # Utility modules
+│   └── models/               # Data models
+│
+├── .env.example              # Example environment variables
+├── package.json              # Project metadata and dependencies
+└── README.md                 # Project documentation
 ```
 
-## רשיון
+## 🚀 How It Works
 
-MIT
+1. **Document Processing**:
+   - Documents are split into chunks of manageable size
+   - Each chunk is processed to create summaries and keywords
+   - A searchable index is built from these chunks
+
+2. **Query Handling**:
+   - When a question is asked, the system finds the most relevant chunks
+   - The chunks are processed one by one in order of relevance
+   - With each chunk, the answer is progressively built and refined
+   - A final summarization step ensures the answer is coherent and complete
+
+3. **Conversation Management**:
+   - The system tracks conversation history
+   - Recent exchanges are kept in full
+   - Older exchanges are merged into a summary to save space
+   - This enables unlimited conversation length
+
+## 🔄 Comparison with Traditional RAG
+
+Our simple approach enhances traditional RAG (Retrieval-Augmented Generation) in several ways:
+
+1. **Iterative Processing**: Instead of passing all relevant chunks at once (which can exceed the context window), we process them sequentially.
+
+2. **Progressive Refinement**: The answer is built step by step, with each new chunk potentially adding or correcting information.
+
+3. **Working Memory**: The system maintains a "working memory" of the current answer as it processes more information.
+
+4. **Unlimited Document Size**: By processing chunks sequentially, the system can handle documents of any size.
+
+5. **Conversation Continuity**: The conversation history management allows for ongoing interactions about large documents.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgements
+
+- Anthropic for the Claude API
+- My mom, who always had faith in me
+
+---
+
+Built with ❤️ for educational purposes capabilities.
